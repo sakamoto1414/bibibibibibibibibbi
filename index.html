@@ -31,7 +31,7 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
 .card h1{font-size:24px;font-weight:900;line-height:1.35;margin-bottom:8px}
 .card h1 span{color:var(--green)}
 .card .sub{font-size:14px;color:#666;margin-bottom:20px;line-height:1.6}
-.cta-btn{display:block;width:100%;padding:18px 24px;background:var(--green);color:#fff;font-size:18px;font-weight:900;border:none;border-radius:14px;cursor:pointer;text-decoration:none;box-shadow:0 6px 20px rgba(6,199,85,.4);-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden;line-height:1.4;margin-bottom:10px}
+.cta-btn{display:block;width:100%;padding:18px 24px;background:var(--green);color:#fff;font-size:18px;font-weight:900;border:none;border-radius:14px;cursor:pointer;text-decoration:none;box-shadow:0 6px 20px rgba(6,199,85,.4);-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden;line-height:1.4;margin-bottom:10px;text-align:center}
 .cta-btn:active{transform:scale(.97)}
 .cta-btn::after{content:'';position:absolute;inset:-3px;border-radius:17px;border:3px solid var(--green);animation:pulse 2s ease-in-out infinite;pointer-events:none}
 @keyframes pulse{0%,100%{opacity:0;transform:scale(1)}50%{opacity:.5;transform:scale(1.03)}}
@@ -50,14 +50,6 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
 .legal details[open] summary::after{transform:rotate(180deg)}
 .legal .legal-content{margin-top:12px;font-size:11px;color:#888;line-height:1.8}
 .legal .legal-content p{margin-bottom:8px}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;padding:20px}
-.modal.show{display:flex}
-.modal-card{background:#fff;border-radius:20px;padding:28px 24px;max-width:340px;width:100%;text-align:center}
-.modal-card h2{font-size:18px;font-weight:900;margin-bottom:12px;color:var(--green)}
-.modal-card p{font-size:14px;color:#333;line-height:1.7;margin-bottom:16px}
-.modal-card .arrow{font-size:32px;margin:12px 0;animation:bounceY 1s infinite}
-@keyframes bounceY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.modal-card .close-btn{display:inline-block;margin-top:8px;padding:10px 20px;background:#eee;border:none;border-radius:8px;font-size:13px;cursor:pointer;color:#666}
 </style>
 </head>
 <body>
@@ -70,7 +62,7 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
     <h1>LINEで<span>無料特典</span>を<br>受け取ろう!</h1>
     <p class="sub">ボタンをタップして<br>LINEの友だち追加をするだけ</p>
 
-    <a href="javascript:void(0)" class="cta-btn" onclick="trackAndRedirect()">
+    <a href="https://lin.ee/YsnCTo2" class="cta-btn" onclick="trackButton(event)" rel="noopener">
       LINEで友だち追加する ▶
     </a>
     <p class="cta-sub">無料・いつでもブロックOK</p>
@@ -90,7 +82,7 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
       </div>
     </div>
 
-    <a href="javascript:void(0)" class="cta-btn" onclick="trackAndRedirect()">
+    <a href="https://lin.ee/YsnCTo2" class="cta-btn" onclick="trackButton(event)" rel="noopener">
       LINEで友だち追加する ▶
     </a>
     <p class="cta-sub">タップで即LINE追加画面へ</p>
@@ -121,84 +113,24 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
   </div>
 </div>
 
-<div class="modal" id="browserModal">
-  <div class="modal-card">
-    <h2>外部ブラウザで開いてください</h2>
-    <p>LINEアプリを起動するには<br>画面右上の「・・・」から<br>「Safariで開く」を<br>タップしてください</p>
-    <div class="arrow">☝️</div>
-    <button class="close-btn" onclick="closeModal()">閉じる</button>
-  </div>
-</div>
-
 <script>
-(function(){
-  var LINE_SHORT_URL = 'https://lin.ee/YsnCTo2';
-  var LINE_ID = '@375ltzkb';
-  var clickFired = false;
-
-  var ua = navigator.userAgent;
-  var isIOS = /iPhone|iPad|iPod/.test(ua);
-  var isAndroid = /Android/.test(ua);
-  var isTikTok = /BytedanceWebview|musical_ly|TikTok/i.test(ua);
-  var isInstagram = /Instagram/i.test(ua);
-  var isInAppBrowser = isTikTok || isInstagram;
-
-  window.trackAndRedirect = function(){
-    if(clickFired) {
-      executeRedirect();
-      return;
-    }
-    clickFired = true;
-
-    // 重複発火防止:セッション内で1回のみ
-    try {
-      if(typeof ttq !== 'undefined'){
-        var sessionFired = sessionStorage.getItem('cb_fired');
-        if (!sessionFired) {
-          ttq.track('ClickButton');
-          sessionStorage.setItem('cb_fired', '1');
-        }
-      }
-    } catch(e){
-      if(typeof ttq !== 'undefined'){
+function trackButton(e){
+  // ピクセル発火(セッション内で1回のみ、重複防止)
+  try {
+    if(typeof ttq !== 'undefined'){
+      var sessionFired = sessionStorage.getItem('cb_fired');
+      if (!sessionFired) {
         ttq.track('ClickButton');
+        sessionStorage.setItem('cb_fired', '1');
       }
     }
-
-    if(isInAppBrowser) {
-      setTimeout(function(){
-        showModal();
-      }, 300);
-      return;
-    }
-
-    setTimeout(function(){
-      executeRedirect();
-    }, 500);
-  };
-
-  function executeRedirect(){
-    var fallbackURL = 'https://line.me/R/ti/p/' + encodeURIComponent(LINE_ID);
-    
-    if(isIOS || isAndroid) {
-      window.location.href = LINE_SHORT_URL;
-      setTimeout(function(){
-        window.location.href = fallbackURL;
-      }, 1500);
-    } else {
-      window.location.href = LINE_SHORT_URL;
+  } catch(err){
+    if(typeof ttq !== 'undefined'){
+      try { ttq.track('ClickButton'); } catch(e2){}
     }
   }
-
-  window.showModal = function(){
-    document.getElementById('browserModal').classList.add('show');
-    clickFired = false;
-  };
-
-  window.closeModal = function(){
-    document.getElementById('browserModal').classList.remove('show');
-  };
-})();
+  // デフォルトのリンク動作はそのまま実行(preventDefault しない)
+}
 </script>
 
 </body>
