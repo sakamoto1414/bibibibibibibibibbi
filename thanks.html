@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>受付完了</title>
+
+<!-- TikTok Pixel Code Start -->
+<script>
+!function (w, d, t) {
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
+var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
+;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+  ttq.load('D7JKP13C77UDI5AAFC20');
+  ttq.page();
+  
+  // 重複発火防止:1ユーザー1回のみCompleteRegistration発火
+  try {
+    var registrationFired = localStorage.getItem('cr_fired');
+    if (!registrationFired) {
+      ttq.track('CompleteRegistration');
+      localStorage.setItem('cr_fired', Date.now().toString());
+    }
+  } catch(e) {
+    // localStorage非対応環境では通常発火
+    ttq.track('CompleteRegistration');
+  }
+}(window, document, 'ttq');
+</script>
+<!-- TikTok Pixel Code End -->
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:linear-gradient(135deg,#06C755 0%,#04a847 100%);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  color:#1a1a1a;
+  -webkit-font-smoothing:antialiased;
+}
+.card{
+  background:#fff;
+  border-radius:24px;
+  padding:clamp(32px,8vw,56px) clamp(24px,6vw,48px);
+  max-width:520px;
+  width:100%;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.15),0 4px 16px rgba(0,0,0,.08);
+  animation:fadeUp .7s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.check-circle{
+  width:clamp(80px,18vw,110px);
+  height:clamp(80px,18vw,110px);
+  background:#06C755;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto clamp(20px,5vw,32px);
+  animation:pop .7s cubic-bezier(.16,1,.3,1) .2s both;
+  box-shadow:0 12px 32px rgba(6,199,85,.4);
+}
+@keyframes pop{
+  0%{transform:scale(0);opacity:0}
+  60%{transform:scale(1.15);opacity:1}
+  100%{transform:scale(1);opacity:1}
+}
+.check-circle svg{
+  width:55%;
+  height:55%;
+}
+h1{
+  font-size:clamp(28px,7vw,42px);
+  font-weight:900;
+  margin-bottom:clamp(24px,6vw,40px);
+  line-height:1.3;
+  letter-spacing:-0.02em;
+  color:#1a1a1a;
+}
+.info-list{
+  background:#f8fdf9;
+  border:2px solid #e0f5e6;
+  border-radius:18px;
+  padding:clamp(20px,5vw,32px) clamp(18px,4vw,28px);
+  text-align:left;
+  animation:fadeUp .7s cubic-bezier(.16,1,.3,1) .4s both;
+}
+.info-item{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  padding:clamp(10px,2.5vw,14px) 0;
+}
+.info-item+.info-item{
+  border-top:1.5px solid #e0f5e6;
+}
+.info-dot{
+  width:clamp(28px,6vw,36px);
+  height:clamp(28px,6vw,36px);
+  background:#06C755;
+  color:#fff;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:clamp(14px,3.5vw,18px);
+  flex-shrink:0;
+  margin-top:2px;
+}
+.info-text{
+  font-size:clamp(16px,4vw,20px);
+  font-weight:700;
+  line-height:1.5;
+  color:#1a1a1a;
+  padding-top:clamp(2px,1vw,6px);
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="check-circle">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 13l4 4L19 7"/>
+    </svg>
+  </div>
+
+  <h1>受付完了しました</h1>
+
+  <div class="info-list">
+    <div class="info-item">
+      <div class="info-dot">1</div>
+      <div class="info-text">年齢と希望金額を<br>教えてください</div>
+    </div>
+    <div class="info-item">
+      <div class="info-dot">2</div>
+      <div class="info-text">このページは<br>閉じてください</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
