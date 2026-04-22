@@ -21,7 +21,7 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap');
 :root{--green:#06C755;--bg:#f0faf4}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);min-height:100vh;color:#1a1a1a;overflow-x:hidden}
+body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);min-height:100vh;color:#1a1a1a;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
 .header{background:var(--green);padding:12px 20px;text-align:center;color:#fff;font-size:13px;font-weight:700;letter-spacing:.05em;animation:slideDown .5s ease-out}
 @keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
 .container{max-width:380px;margin:0 auto;padding:24px 20px 40px}
@@ -31,7 +31,7 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
 .card h1{font-size:24px;font-weight:900;line-height:1.35;margin-bottom:8px}
 .card h1 span{color:var(--green)}
 .card .sub{font-size:14px;color:#666;margin-bottom:20px;line-height:1.6}
-.cta-btn{display:block;width:100%;padding:18px 24px;background:var(--green);color:#fff;font-size:18px;font-weight:900;border:none;border-radius:14px;cursor:pointer;text-decoration:none;box-shadow:0 6px 20px rgba(6,199,85,.4);-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden;line-height:1.4;margin-bottom:10px;text-align:center}
+.cta-btn{display:block;width:100%;padding:18px 24px;background:var(--green);color:#fff;font-size:18px;font-weight:900;border:none;border-radius:14px;cursor:pointer;text-decoration:none;box-shadow:0 6px 20px rgba(6,199,85,.4);position:relative;overflow:hidden;line-height:1.4;margin-bottom:10px;text-align:center}
 .cta-btn:active{transform:scale(.97)}
 .cta-btn::after{content:'';position:absolute;inset:-3px;border-radius:17px;border:3px solid var(--green);animation:pulse 2s ease-in-out infinite;pointer-events:none}
 @keyframes pulse{0%,100%{opacity:0;transform:scale(1)}50%{opacity:.5;transform:scale(1.03)}}
@@ -50,6 +50,13 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
 .legal details[open] summary::after{transform:rotate(180deg)}
 .legal .legal-content{margin-top:12px;font-size:11px;color:#888;line-height:1.8}
 .legal .legal-content p{margin-bottom:8px}
+.rescue{margin-top:20px;padding:18px;background:#fff3cd;border:2px solid #ffc107;border-radius:12px;display:none;animation:fadeIn .4s ease-out}
+.rescue.show{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.rescue .rescue-title{font-weight:900;color:#856404;margin-bottom:10px;font-size:14px;text-align:center}
+.rescue p{font-size:13px;color:#333;line-height:1.7;margin-bottom:8px}
+.id-box{background:#fff;padding:14px;border-radius:10px;margin:12px 0;font-size:20px;font-weight:900;color:#06C755;text-align:center;border:2px solid var(--green);user-select:all;-webkit-user-select:all;letter-spacing:1.5px}
+.rescue small{display:block;text-align:center;color:#666;font-size:11px;line-height:1.6}
 </style>
 </head>
 <body>
@@ -62,7 +69,7 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
     <h1>LINEで<span>無料特典</span>を<br>受け取ろう!</h1>
     <p class="sub">ボタンをタップして<br>LINEの友だち追加をするだけ</p>
 
-    <a href="https://lin.ee/YsnCTo2" class="cta-btn" onclick="trackButton(event)" rel="noopener">
+    <a href="https://lin.ee/YsnCTo2" class="cta-btn" onclick="return handleClick(event);">
       LINEで友だち追加する ▶
     </a>
     <p class="cta-sub">無料・いつでもブロックOK</p>
@@ -82,10 +89,17 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
       </div>
     </div>
 
-    <a href="https://lin.ee/YsnCTo2" class="cta-btn" onclick="trackButton(event)" rel="noopener">
+    <a href="https://lin.ee/YsnCTo2" class="cta-btn" onclick="return handleClick(event);">
       LINEで友だち追加する ▶
     </a>
     <p class="cta-sub">タップで即LINE追加画面へ</p>
+
+    <div class="rescue" id="rescueBox">
+      <div class="rescue-title">⚠️ LINE画面が開かない場合</div>
+      <p>下のIDをタップしてコピー<br>LINEアプリで検索して追加してください:</p>
+      <div class="id-box">@375ltzkb</div>
+      <small>または画面右上の「・・・」から<br>「ブラウザで開く」をタップしてください</small>
+    </div>
   </div>
 
   <div class="legal">
@@ -114,23 +128,89 @@ body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;back
 </div>
 
 <script>
-function trackButton(e){
-  // ピクセル発火(セッション内で1回のみ、重複防止)
-  try {
-    if(typeof ttq !== 'undefined'){
-      var sessionFired = sessionStorage.getItem('cb_fired');
-      if (!sessionFired) {
-        ttq.track('ClickButton');
-        sessionStorage.setItem('cb_fired', '1');
+(function(){
+  var ua = navigator.userAgent;
+  var isIOS = /iPhone|iPad|iPod/.test(ua);
+  var isAndroid = /Android/.test(ua);
+  var isTikTok = /BytedanceWebview|musical_ly|TikTok|Bytedance/i.test(ua);
+  var isInstagram = /Instagram/i.test(ua);
+  var isInApp = isTikTok || isInstagram;
+  var clickedAt = 0;
+  var pageHidden = false;
+
+  // ページ離脱検知(LINE起動成功したら hidden になる)
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden) pageHidden = true;
+  });
+
+  window.handleClick = function(e){
+    var now = Date.now();
+    
+    // 連打防止(800ms以内の連打は無視)
+    if(now - clickedAt < 800) {
+      if(isInApp) {
+        e.preventDefault();
+        return false;
+      }
+      return true;
+    }
+    clickedAt = now;
+    
+    // ピクセル発火(セッション内で1回のみ、重複防止)
+    try {
+      if(typeof ttq !== 'undefined'){
+        var fired = sessionStorage.getItem('cb_fired');
+        if (!fired) {
+          ttq.track('ClickButton');
+          sessionStorage.setItem('cb_fired', '1');
+        }
+      }
+    } catch(err){
+      if(typeof ttq !== 'undefined'){
+        try { ttq.track('ClickButton'); } catch(e2){}
       }
     }
-  } catch(err){
-    if(typeof ttq !== 'undefined'){
-      try { ttq.track('ClickButton'); } catch(e2){}
+    
+    // TikTokアプリ内ブラウザ / Instagram内の場合:複数URL試行
+    if(isInApp) {
+      e.preventDefault();
+      
+      // 起動試行1(即時):lin.ee
+      window.location.href = 'https://lin.ee/YsnCTo2';
+      
+      // 起動試行2(1.2秒後):line.me Universal Link(%40=@)
+      setTimeout(function(){
+        if(!pageHidden && !document.hidden) {
+          window.location.href = 'https://line.me/R/ti/p/%40375ltzkb';
+        }
+      }, 1200);
+      
+      // 起動試行3(2.4秒後):LINE友だち追加の別形式
+      setTimeout(function(){
+        if(!pageHidden && !document.hidden) {
+          window.location.href = 'https://line.me/R/oaMessage/%40375ltzkb/?';
+        }
+      }, 2400);
+      
+      // 救済表示(4秒後):起動失敗時のID手動入力誘導
+      setTimeout(function(){
+        if(!pageHidden && !document.hidden) {
+          var box = document.getElementById('rescueBox');
+          if(box) {
+            box.classList.add('show');
+            box.scrollIntoView({behavior:'smooth', block:'center'});
+          }
+        }
+      }, 4000);
+      
+      return false;
     }
-  }
-  // デフォルトのリンク動作はそのまま実行(preventDefault しない)
-}
+    
+    // iOS Safari / Android Chrome / PCブラウザなど:通常のリンク動作に任せる
+    // ピクセル発火後、ブラウザが自動で lin.ee に遷移 → LINEアプリ起動
+    return true;
+  };
+})();
 </script>
 
 </body>
